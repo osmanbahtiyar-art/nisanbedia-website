@@ -1,5 +1,5 @@
 /**
- * nisanbedia.com - Main Application Logic & Admin State Controller
+ * nisanbedia.com - Main Application Logic, Admin State Controller & Supabase Cloud Sync
  */
 
 (function () {
@@ -8,6 +8,7 @@
 
     // Application State
     let state = {};
+    let supabaseClient = null;
 
     // SVG Icon Map for High-Quality Vector Social Icons
     const SVG_ICONS = {
@@ -109,6 +110,12 @@
         themeSelectCards: document.querySelectorAll(".theme-select-card"),
         accentColorPicker: document.getElementById("accentColorPicker"),
 
+        // Supabase Tab
+        supabaseConfigForm: document.getElementById("supabaseConfigForm"),
+        supaUrlInput: document.getElementById("supaUrlInput"),
+        supaKeyInput: document.getElementById("supaKeyInput"),
+        supaTableNameInput: document.getElementById("supaTableNameInput"),
+
         // Security & Backup
         changePasswordForm: document.getElementById("changePasswordForm"),
         currentPassInput: document.getElementById("currentPassInput"),
@@ -122,8 +129,10 @@
     /* ==========================================
        Initialization & Data Sync
        ========================================== */
-    function init() {
-        loadState();
+    async function init() {
+        loadLocalState();
+        initSupabase();
+        await syncStateFromSupabase();
         applyAppearance();
         renderSiteContent();
         setupEventListeners();
@@ -133,7 +142,6 @@
     }
 
     function checkSuperadminxRoute() {
-        // Automatically open admin login modal when visiting /superadminx or ?superadminx=1
         const path = window.location.pathname.toLowerCase();
         const search = window.location.search.toLowerCase();
         const hash = window.location.hash.toLowerCase();
@@ -145,7 +153,7 @@
         }
     }
 
-    function loadState() {
+    function loadLocalState() {
         try {
             const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) {
@@ -159,12 +167,63 @@
         }
     }
 
-    function saveState() {
+    function initSupabase() {
+        const supaUrl = state.supabaseConfig?.url || "";
+        const supaKey = state.supabaseConfig?.anonKey || "";
+
+        if (window.supabase && typeof window.supabase.createClient === "function" && supaUrl && supaKey) {
+            try {
+                supabaseClient = window.supabase.createClient(supaUrl, supaKey);
+            } catch (e) {
+                console.warn("Supabase init failed:", e);
+                supabaseClient = null;
+            }
+        }
+    }
+
+    async function syncStateFromSupabase() {
+        if (!supabaseClient) return;
+
+        const tableName = state.supabaseConfig?.tableName || "site_config";
         try {
+            const { data, error } = await supabaseClient
+                .from(tableName)
+                .select("data")
+                .eq("id", "main")
+                .single();
+
+            if (!error && data && data.data) {
+                state = { ...state, ...data.data };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            }
+        } catch (e) {
+            console.warn("Supabase fetch error:", e);
+        }
+    }
+
+    async function saveState() {
+        try {
+            // Save to LocalStorage
             localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
             renderSiteContent();
             applyAppearance();
-            showToast("Değişiklikler başarıyla kaydedildi! ✨");
+
+            // Save to Supabase Cloud DB if connected
+            if (supabaseClient) {
+                const tableName = state.supabaseConfig?.tableName || "site_config";
+                const { error } = await supabaseClient
+                    .from(tableName)
+                    .upsert({ id: "main", data: state, updated_at: new Date().toISOString() });
+
+                if (error) {
+                    console.error("Supabase upsert error:", error);
+                    showToast("Yerel kaydedildi, fakat Supabase bulut güncellenemedi.", true);
+                } else {
+                    showToast("Değişiklikler Supabase Bulut Veritabanına Anında İşlendi! ✨");
+                }
+            } else {
+                showToast("Değişiklikler cihazınıza kaydedildi! ✨");
+            }
         } catch (e) {
             console.error("State save error:", e);
             showToast("Kaydetme sırasında bir hata oluştu.", true);
@@ -505,6 +564,27 @@
             });
         }
 
+        // Supabase Config Form Submit
+        if (elements.supabaseConfigForm) {
+            elements.supabaseConfigForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                if (!state.supabaseConfig) state.supabaseConfig = {};
+
+                state.supabaseConfig.url = elements.supaUrlInput.value.trim();
+                state.supabaseConfig.anonKey = elements.supaKeyInput.value.trim();
+                state.supabaseConfig.tableName = elements.supaTableNameInput.value.trim() || "site_config";
+
+                initSupabase();
+
+                if (supabaseClient) {
+                    showToast("Supabase istemcisi başlatıldı, bağlantı sınanıyor...");
+                    await saveState();
+                } else {
+                    showToast("Geçersiz Supabase URL veya Anon Key!", true);
+                }
+            });
+        }
+
         // Change Admin Password Form
         elements.changePasswordForm.addEventListener("submit", (e) => {
             e.preventDefault();
@@ -585,7 +665,7 @@
     }
 
     function populateDashboardFields() {
-        const { profile } = state;
+        const { profile, supabaseConfig } = state;
         
         elements.editFullName.value = profile.fullName || "";
         elements.editTitle.value = profile.title || "";
@@ -600,6 +680,11 @@
         if (elements.adminPhotoPreview) {
             elements.adminPhotoPreview.src = profile.photoUrl;
         }
+
+        // Supabase Tab Fields
+        if (elements.supaUrlInput) elements.supaUrlInput.value = supabaseConfig?.url || "";
+        if (elements.supaKeyInput) elements.supaKeyInput.value = supabaseConfig?.anonKey || "";
+        if (elements.supaTableNameInput) elements.supaTableNameInput.value = supabaseConfig?.tableName || "site_config";
 
         renderAdminSocialList();
         renderAdminFeaturedList();

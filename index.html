@@ -15,6 +15,9 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
+    <!-- Supabase JS Client Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -175,7 +178,7 @@
                     <i data-lucide="sliders" class="dash-title-icon"></i>
                     <div>
                         <h2>Yönetim Paneli (Superadminx)</h2>
-                        <span class="dash-subtitle">nisanbedia.com Canlı İçerik Düzenleyici</span>
+                        <span class="dash-subtitle">nisanbedia.com Canlı İçerik Düzenleyici & Supabase Bulut Senkronu</span>
                     </div>
                 </div>
                 <div class="dash-header-actions">
@@ -201,6 +204,9 @@
                     </button>
                     <button class="tab-btn" data-tab="tabAppearance">
                         <i data-lucide="palette"></i> <span>Görünüm & Tema</span>
+                    </button>
+                    <button class="tab-btn" data-tab="tabSupabase">
+                        <i data-lucide="database"></i> <span>Supabase Bulut</span>
                     </button>
                     <button class="tab-btn" data-tab="tabSettings">
                         <i data-lucide="shield"></i> <span>Şifre & Yedek</span>
@@ -280,7 +286,7 @@
 
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary">
-                                    <i data-lucide="save"></i> Değişiklikleri Kaydet
+                                    <i data-lucide="save"></i> Değişiklikleri Kaydet & Buluta Gönder
                                 </button>
                             </div>
                         </form>
@@ -353,7 +359,34 @@
                         </div>
                     </div>
 
-                    <!-- TAB 5: ŞİFRE & YEDEK -->
+                    <!-- TAB 5: SUPABASE BULUT AYARLARI -->
+                    <div id="tabSupabase" class="tab-pane">
+                        <h3><i data-lucide="database"></i> Supabase Bulut Veritabanı Entegrasyonu</h3>
+                        <p class="tab-desc">Tüm dünyadaki ziyaretçilerin aynı anlık veriyi görmesi için Supabase bilgilerinizi girin.</p>
+
+                        <form id="supabaseConfigForm" class="admin-form">
+                            <div class="form-group">
+                                <label for="supaUrlInput">Supabase Proje URL (Project URL)</label>
+                                <input type="url" id="supaUrlInput" placeholder="https://xyz.supabase.co">
+                            </div>
+                            <div class="form-group">
+                                <label for="supaKeyInput">Supabase Anon Key (public API Key)</label>
+                                <input type="password" id="supaKeyInput" placeholder="eyJhYmdjZXJ0...">
+                            </div>
+                            <div class="form-group">
+                                <label for="supaTableNameInput">Tablo Adı (Table Name)</label>
+                                <input type="text" id="supaTableNameInput" value="site_config" placeholder="site_config">
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i data-lucide="link"></i> Supabase Bağlantısını Kaydet ve Test Et
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- TAB 6: ŞİFRE & YEDEK -->
                     <div id="tabSettings" class="tab-pane">
                         <h3>Güvenlik ve Veri Yönetimi</h3>
                         <p class="tab-desc">Yönetim paneli giriş şifrenizi güncelleyin veya site verilerinizi indirin/yükleyin.</p>
@@ -438,7 +471,7 @@
                         <input type="text" id="itemBadgeInput" placeholder="Örn: Takip Et, Git">
                     </div>
                     <div class="form-group">
-                        <label for="itemIconInput">İkon Adı (Lucide)</label>
+                        <label for="itemIconInput">İkon Adı</label>
                         <select id="itemIconInput">
                             <option value="instagram">Instagram</option>
                             <option value="linkedin">LinkedIn</option>
@@ -449,9 +482,6 @@
                             <option value="globe">Web / İnternet</option>
                             <option value="briefcase">Portfolyo / İş</option>
                             <option value="book-open">Blog / Yazı</option>
-                            <option value="music">Müzik</option>
-                            <option value="camera">Fotoğraf</option>
-                            <option value="heart">Favori</option>
                         </select>
                     </div>
                 </div>
