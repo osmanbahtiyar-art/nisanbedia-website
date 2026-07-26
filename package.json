@@ -1,0 +1,9 @@
+{
+  "name": "nisanbedia-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Nisan Bedia Sağdıç Personal Website",
+  "scripts": {
+    "build": "echo Static site build complete"
+  }
+}
