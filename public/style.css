@@ -162,11 +162,32 @@ body {
 .brand-logo {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     text-decoration: none;
     color: var(--text-primary);
     font-weight: 700;
     font-size: 1.1rem;
+}
+
+.brand-avatar-wrap {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    border: 2px solid var(--accent);
+    flex-shrink: 0;
+    box-shadow: var(--shadow-glow);
+    transition: transform var(--transition-fast);
+}
+
+.brand-avatar-wrap:hover {
+    transform: scale(1.08);
+}
+
+.brand-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .brand-initial {
@@ -215,32 +236,6 @@ body {
 .theme-icon-light { display: none; }
 [data-theme="light"] .theme-icon-dark { display: none; }
 [data-theme="light"] .theme-icon-light { display: block; }
-
-.admin-trigger-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    border-radius: var(--radius-full);
-    border: 1px solid var(--border-color);
-    background: var(--bg-card);
-    color: var(--text-primary);
-    font-size: 0.88rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-}
-
-.admin-trigger-btn:hover {
-    border-color: var(--accent);
-    background: var(--accent-glow);
-    color: var(--accent);
-}
-
-.admin-trigger-btn i {
-    width: 16px;
-    height: 16px;
-}
 
 /* Main Content Spacing */
 .main-content {
@@ -428,7 +423,6 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-
 }
 
 .section-title i {
@@ -645,26 +639,7 @@ body {
     color: var(--text-secondary);
 }
 
-.footer-admin-link {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    font-size: 0.78rem;
-    cursor: pointer;
-    text-decoration: underline;
-    opacity: 0.6;
-    transition: opacity var(--transition-fast);
-}
-
-.footer-admin-link:hover {
-    opacity: 1;
-    color: var(--accent);
-}
-
-/* ==========================================================================
-   Modals & Admin Panel Styling
-   ========================================================================== */
-
+/* Modals */
 .modal-backdrop {
     position: fixed;
     inset: 0;

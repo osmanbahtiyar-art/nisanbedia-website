@@ -38,6 +38,7 @@
         profileLocation: document.getElementById("profileLocation"),
         profileEmail: document.getElementById("profileEmail"),
         profilePhoto: document.getElementById("profilePhoto"),
+        navProfilePhoto: document.getElementById("navProfilePhoto"),
         statusBadgeText: document.getElementById("statusBadgeText"),
         statusBadge: document.getElementById("statusBadge"),
         tagsContainer: document.getElementById("tagsContainer"),
@@ -154,7 +155,6 @@
             state = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
         }
 
-        // Ensure default Supabase config fallback
         if (!state.supabaseConfig || !state.supabaseConfig.url) {
             state.supabaseConfig = DEFAULT_CONFIG.supabaseConfig;
         }
@@ -220,7 +220,6 @@
 
                 if (error) {
                     console.error("Supabase upsert error:", error);
-                    // Try fallback table 'site_config' if specified table failed
                     const { error: fallbackErr } = await supabaseClient
                         .from("site_config")
                         .upsert({ id: "main", data: state, updated_at: new Date().toISOString() });
@@ -273,6 +272,9 @@
         
         if (elements.profilePhoto && profile.photoUrl) {
             elements.profilePhoto.src = profile.photoUrl;
+        }
+        if (elements.navProfilePhoto && profile.photoUrl) {
+            elements.navProfilePhoto.src = profile.photoUrl;
         }
 
         // Title Tag
