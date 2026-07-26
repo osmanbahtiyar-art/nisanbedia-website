@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark" data-accent="rose">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nisan Bedia Sağdıç | nisanbedia.com</title>
+    <meta name="description" content="Nisan Bedia Sağdıç kişisel web sitesi, sosyal medya hesapları ve iletişim bilgileri.">
+    <meta name="author" content="Nisan Bedia Sağdıç">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Ambient Glow Effects -->
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+
+    <!-- Header Navigation -->
+    <header class="site-header">
+        <div class="container nav-container">
+            <a href="#" class="brand-logo">
+                <span class="brand-initial">N</span>
+                <span class="brand-name">nisanbedia<span class="domain-dot">.com</span></span>
+            </a>
+
+            <div class="nav-actions">
+                <button id="themeToggleBtn" class="icon-btn" title="Tema Değiştir" aria-label="Tema Değiştir">
+                    <i data-lucide="moon" class="theme-icon-dark"></i>
+                    <i data-lucide="sun" class="theme-icon-light"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-card glass-card">
+                    <div class="profile-photo-wrapper">
+                        <div class="photo-ring">
+                            <img id="profilePhoto" src="nisan_bedia_portrait.jpg" alt="Nisan Bedia Sağdıç" class="profile-img">
+                        </div>
+                        <div id="statusBadge" class="status-badge">
+                            <span class="status-dot"></span>
+                            <span id="statusBadgeText">İş Birliklerine Açık ✨</span>
+                        </div>
+                    </div>
+
+                    <div class="profile-info">
+                        <h1 id="fullName" class="profile-name">Nisan Bedia Sağdıç</h1>
+                        <p id="profileTitle" class="profile-title">Tasarımcı & Dijital İçerik Üreticisi</p>
+                        <p id="profileTagline" class="profile-tagline">Yaratıcı vizyon, dijital estetik ve minimalist tasarım tutkunu.</p>
+                        
+                        <div class="quick-contact-pills">
+                            <span class="pill-item">
+                                <i data-lucide="map-pin"></i>
+                                <span id="profileLocation">İstanbul, Türkiye</span>
+                            </span>
+                            <span class="pill-item copy-email-btn" id="copyEmailBtn" title="E-postayı Kopyala">
+                                <i data-lucide="mail"></i>
+                                <span id="profileEmail">nisan@nisanbedia.com</span>
+                                <i data-lucide="copy" class="copy-icon"></i>
+                            </span>
+                        </div>
+
+                        <!-- Quick Social Header Bar -->
+                        <div id="quickSocialBar" class="quick-social-bar">
+                            <!-- JS Will Render Quick Social Icons Here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="about-section">
+            <div class="container">
+                <div class="section-card glass-card">
+                    <div class="section-header">
+                        <h2 class="section-title"><i data-lucide="user"></i> Hakkımda</h2>
+                    </div>
+                    <div class="section-body">
+                        <p id="profileBio" class="bio-text">
+                            Merhaba! Ben Nisan Bedia Sağdıç. Dijital dünyada estetik, kullanıcı deneyimi ve özgün içerik üretimi üzerine çalışmalar yapıyorum. Sosyal medya mecralarım üzerinden güncel projelerimi ve hayatımdan kesitleri paylaşıyorum.
+                        </p>
+                        
+                        <div class="tags-container" id="tagsContainer">
+                            <!-- JS Will Render Tags Here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Social Links Cards Section -->
+        <section class="social-section">
+            <div class="container">
+                <div class="section-header center">
+                    <h2 class="section-title"><i data-lucide="share-2"></i> Sosyal Medya & İletişim</h2>
+                    <p class="section-subtitle">Tüm resmi sosyal medya hesaplarım ve doğrudan iletişim kanallarım</p>
+                </div>
+
+                <div id="socialLinksGrid" class="social-grid">
+                    <!-- JS Will Render Social Media Link Cards Here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Highlights Section -->
+        <section class="featured-section">
+            <div class="container">
+                <div class="section-header center">
+                    <h2 class="section-title"><i data-lucide="sparkles"></i> Öne Çıkanlar & Bağlantılar</h2>
+                    <p class="section-subtitle">Projelerim, makalelerim ve güncel paylaşımlarım</p>
+                </div>
+
+                <div id="featuredCardsGrid" class="featured-grid">
+                    <!-- JS Will Render Featured Link Cards Here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-container">
+            <p>&copy; <span id="currentYear">2026</span> <strong>Nisan Bedia Sağdıç</strong>. Tüm hakları saklıdır.</p>
+            <p class="domain-tag"><i data-lucide="globe"></i> nisanbedia.com</p>
+        </div>
+    </footer>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- ==================== ADMIN LOGIN MODAL ==================== -->
+    <div id="adminLoginModal" class="modal-backdrop hidden">
+        <div class="modal-box glass-modal login-modal">
+            <button class="modal-close-btn" id="closeLoginModalBtn">&times;</button>
+            <div class="modal-header">
+                <div class="modal-icon-badge"><i data-lucide="lock"></i></div>
+                <h3>Yönetim Paneli Girişi</h3>
+                <p>nisanbedia.com içeriklerini değiştirmek için şifrenizi girin.</p>
+            </div>
+            <form id="adminLoginForm" class="login-form">
+                <div class="form-group">
+                    <label for="adminPasscode">Admin Şifresi</label>
+                    <div class="password-input-wrap">
+                        <input type="password" id="adminPasscode" placeholder="Şifrenizi girin (Varsayılan: 1234)" required autocomplete="current-password">
+                        <button type="button" id="togglePassVisibility" class="pass-toggle"><i data-lucide="eye"></i></button>
+                    </div>
+                </div>
+                <div id="loginErrorMsg" class="error-msg hidden">Hatalı şifre! Lütfen tekrar deneyin.</div>
+                <button type="submit" class="btn btn-primary full-width">
+                    <i data-lucide="log-in"></i> Giriş Yap
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== ADMIN DASHBOARD MODAL ==================== -->
+    <div id="adminDashboardModal" class="modal-backdrop hidden">
+        <div class="modal-box glass-modal dashboard-modal">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <div class="dash-title">
+                    <i data-lucide="sliders" class="dash-title-icon"></i>
+                    <div>
+                        <h2>Yönetim Paneli (Superadminx)</h2>
+                        <span class="dash-subtitle">nisanbedia.com Canlı İçerik Düzenleyici</span>
+                    </div>
+                </div>
+                <div class="dash-header-actions">
+                    <button id="exportConfigBtn" class="btn btn-secondary btn-sm" title="Yedek İndir (JSON)">
+                        <i data-lucide="download"></i> Yedek İndir
+                    </button>
+                    <button id="closeDashboardBtn" class="modal-close-btn">&times;</button>
+                </div>
+            </div>
+
+            <!-- Dashboard Body with Tabs -->
+            <div class="dashboard-body">
+                <!-- Sidebar Tabs Navigation -->
+                <div class="dash-tabs-nav">
+                    <button class="tab-btn active" data-tab="tabProfile">
+                        <i data-lucide="user"></i> <span>Profil Bilgileri</span>
+                    </button>
+                    <button class="tab-btn" data-tab="tabSocial">
+                        <i data-lucide="share-2"></i> <span>Sosyal Medya</span>
+                    </button>
+                    <button class="tab-btn" data-tab="tabFeatured">
+                        <i data-lucide="link"></i> <span>Öne Çıkanlar</span>
+                    </button>
+                    <button class="tab-btn" data-tab="tabAppearance">
+                        <i data-lucide="palette"></i> <span>Görünüm & Tema</span>
+                    </button>
+                    <button class="tab-btn" data-tab="tabSettings">
+                        <i data-lucide="shield"></i> <span>Şifre & Yedek</span>
+                    </button>
+                </div>
+
+                <!-- Tab Content Panels -->
+                <div class="dash-tab-contents">
+                    
+                    <!-- TAB 1: PROFİL BİLGİLERİ -->
+                    <div id="tabProfile" class="tab-pane active">
+                        <h3>Profil ve Biyografi Düzenle</h3>
+                        <p class="tab-desc">Sitede görünen ad-soyad, unvan, fotoğraf ve açıklama bilgilerini güncelleyin.</p>
+                        
+                        <form id="profileEditForm" class="admin-form">
+                            <!-- Profile Photo Upload / URL -->
+                            <div class="photo-edit-group">
+                                <div class="photo-preview-wrap">
+                                    <img id="adminPhotoPreview" src="nisan_bedia_portrait.jpg" alt="Önizleme">
+                                </div>
+                                <div class="photo-inputs">
+                                    <label>Profil Fotoğrafı</label>
+                                    <div class="form-group inline-upload">
+                                        <input type="file" id="photoFileInput" accept="image/*" class="file-input-hidden">
+                                        <button type="button" id="triggerFileSelect" class="btn btn-secondary btn-sm">
+                                            <i data-lucide="upload"></i> Cihazdan Fotoğraf Seç
+                                        </button>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" id="editPhotoUrl" placeholder="Veya Fotoğraf Bağlantısı (URL)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="editFullName">Ad Soyad</label>
+                                    <input type="text" id="editFullName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editTitle">Unvan / Meslek</label>
+                                    <input type="text" id="editTitle" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="editTagline">Kısa Mottolar / Slogan</label>
+                                <input type="text" id="editTagline">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="editBio">Biyografi Metni (Hakkımda)</label>
+                                <textarea id="editBio" rows="4"></textarea>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="editLocation">Şehir / Konum</label>
+                                    <input type="text" id="editLocation">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editEmail">E-posta Adresi</label>
+                                    <input type="email" id="editEmail">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="editStatusBadge">Durum Rozeti (Hero Badge)</label>
+                                    <input type="text" id="editStatusBadge" placeholder="Örn: İş Birliklerine Açık ✨">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editTags">Etiketler / İlgi Alanları (Virgülle ayırın)</label>
+                                    <input type="text" id="editTags" placeholder="Tasarım, Moda, Teknoloji">
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i data-lucide="save"></i> Değişiklikleri Kaydet
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- TAB 2: SOSYAL MEDYA LİNKLERİ -->
+                    <div id="tabSocial" class="tab-pane">
+                        <div class="pane-header">
+                            <div>
+                                <h3>Sosyal Medya Linkleri</h3>
+                                <p class="tab-desc">Ziyaretçilerinizin size ulaşabileceği sosyal hesaplarınızı yönetin.</p>
+                            </div>
+                            <button id="addNewSocialBtn" class="btn btn-primary btn-sm">
+                                <i data-lucide="plus"></i> Yeni Hesap Ekle
+                            </button>
+                        </div>
+
+                        <div id="adminSocialList" class="admin-items-list">
+                            <!-- JS Will Render Editable Social Media List -->
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: ÖNE ÇIKAN BAĞLANTILAR -->
+                    <div id="tabFeatured" class="tab-pane">
+                        <div class="pane-header">
+                            <div>
+                                <h3>Öne Çıkanlar & Portfolyo Bağlantıları</h3>
+                                <p class="tab-desc">Portfolyo, blog, Spotify listeleri veya özel bağlantı kartları ekleyin.</p>
+                            </div>
+                            <button id="addNewFeaturedBtn" class="btn btn-primary btn-sm">
+                                <i data-lucide="plus"></i> Yeni Kart Ekle
+                            </button>
+                        </div>
+
+                        <div id="adminFeaturedList" class="admin-items-list">
+                            <!-- JS Will Render Editable Featured Cards List -->
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: GÖRÜNÜM & TEMA -->
+                    <div id="tabAppearance" class="tab-pane">
+                        <h3>Görünüm ve Renk Paleti</h3>
+                        <p class="tab-desc">Sitenin genel temasını ve renk vurgularını dilediğiniz gibi özelleştirin.</p>
+
+                        <div class="appearance-settings">
+                            <div class="setting-group">
+                                <label>Varsayılan Tema</label>
+                                <div class="theme-options">
+                                    <button class="theme-select-card" data-theme-val="dark">
+                                        <div class="theme-preview dark-preview"></div>
+                                        <span>Koyu Tema (Dark)</span>
+                                    </button>
+                                    <button class="theme-select-card" data-theme-val="light">
+                                        <div class="theme-preview light-preview"></div>
+                                        <span>Açık Tema (Light)</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <label>Vurgu Rengi Paleti (Accent Color)</label>
+                                <div class="color-options" id="accentColorPicker">
+                                    <button class="color-swatch rose active" data-color="rose" title="Rose Gold"></button>
+                                    <button class="color-swatch emerald" data-color="emerald" title="Emerald Green"></button>
+                                    <button class="color-swatch sapphire" data-color="sapphire" title="Sapphire Blue"></button>
+                                    <button class="color-swatch gold" data-color="gold" title="Warm Gold"></button>
+                                    <button class="color-swatch violet" data-color="violet" title="Midnight Violet"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 5: ŞİFRE & YEDEK -->
+                    <div id="tabSettings" class="tab-pane">
+                        <h3>Güvenlik ve Veri Yönetimi</h3>
+                        <p class="tab-desc">Yönetim paneli giriş şifrenizi güncelleyin veya site verilerinizi indirin/yükleyin.</p>
+
+                        <div class="settings-box-grid">
+                            <!-- Password Change Form -->
+                            <div class="setting-card">
+                                <h4><i data-lucide="key"></i> Admin Şifresi Değiştir</h4>
+                                <form id="changePasswordForm">
+                                    <div class="form-group">
+                                        <label for="currentPassInput">Mevcut Şifre</label>
+                                        <input type="password" id="currentPassInput" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newPassInput">Yeni Şifre</label>
+                                        <input type="password" id="newPassInput" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-secondary btn-sm">
+                                        <i data-lucide="check"></i> Şifreyi Güncelle
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Data Backup & Restore -->
+                            <div class="setting-card">
+                                <h4><i data-lucide="database"></i> Veri Yedekleme & İçe/Dışa Aktarma</h4>
+                                <p class="card-hint">Sitede yaptığınız tüm değişiklikleri bir JSON dosyası olarak kaydedebilir veya daha önce aldığınız yedeği yükleyebilirsiniz.</p>
+                                <div class="backup-actions">
+                                    <button id="dashExportBtn" class="btn btn-secondary btn-sm">
+                                        <i data-lucide="download"></i> Yedeği Bilgisayara İndir (.json)
+                                    </button>
+                                    <div class="import-wrapper">
+                                        <input type="file" id="importJsonInput" accept=".json" class="file-input-hidden">
+                                        <button id="triggerImportBtn" class="btn btn-secondary btn-sm">
+                                            <i data-lucide="upload"></i> Yedeği Yükle (JSON)
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="reset-danger-zone">
+                                    <button id="resetDefaultsBtn" class="btn btn-danger-link btn-sm">
+                                        <i data-lucide="rotate-ccw"></i> Varsayılan Fabrika Ayarlarına Dön
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== ITEM EDIT MODAL ==================== -->
+    <div id="itemEditModal" class="modal-backdrop hidden">
+        <div class="modal-box glass-modal item-modal">
+            <button id="closeItemEditBtn" class="modal-close-btn">&times;</button>
+            <div class="modal-header">
+                <h3 id="itemEditModalTitle">Öğe Düzenle</h3>
+            </div>
+            <form id="itemEditForm">
+                <input type="hidden" id="itemEditId">
+                <input type="hidden" id="itemEditType"> <!-- 'social' or 'featured' -->
+
+                <div class="form-group">
+                    <label for="itemTitleInput">Başlık / Platform</label>
+                    <input type="text" id="itemTitleInput" required placeholder="Örn: Instagram">
+                </div>
+
+                <div class="form-group">
+                    <label for="itemSubInput">Kullanıcı Adı / Açıklama</label>
+                    <input type="text" id="itemSubInput" placeholder="Örn: @nisanbedia veya Açıklama">
+                </div>
+
+                <div class="form-group">
+                    <label for="itemUrlInput">Bağlantı Adresi (URL)</label>
+                    <input type="url" id="itemUrlInput" required placeholder="https://...">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="itemBadgeInput">Buton / Rozet Metni</label>
+                        <input type="text" id="itemBadgeInput" placeholder="Örn: Takip Et, Git">
+                    </div>
+                    <div class="form-group">
+                        <label for="itemIconInput">İkon Adı (Lucide)</label>
+                        <select id="itemIconInput">
+                            <option value="instagram">Instagram</option>
+                            <option value="linkedin">LinkedIn</option>
+                            <option value="twitter">Twitter / X</option>
+                            <option value="youtube">YouTube</option>
+                            <option value="spotify">Spotify</option>
+                            <option value="mail">Mail / E-posta</option>
+                            <option value="globe">Web / İnternet</option>
+                            <option value="briefcase">Portfolyo / İş</option>
+                            <option value="book-open">Blog / Yazı</option>
+                            <option value="music">Müzik</option>
+                            <option value="camera">Fotoğraf</option>
+                            <option value="heart">Favori</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="itemColorInput">Özel Renk (Hex)</label>
+                    <input type="color" id="itemColorInput" value="#E1306C">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary full-width">
+                        <i data-lucide="check"></i> Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Configuration Load & App Logic Scripts -->
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

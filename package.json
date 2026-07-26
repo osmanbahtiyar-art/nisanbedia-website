@@ -4,6 +4,6 @@
   "private": true,
   "description": "Nisan Bedia Sağdıç Personal Website",
   "scripts": {
-    "build": "echo Static site build complete"
+    "build": "node build.js"
   }
 }
