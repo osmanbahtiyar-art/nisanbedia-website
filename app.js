@@ -9,6 +9,25 @@
     // Application State
     let state = {};
 
+    // SVG Icon Map for High-Quality Vector Social Icons
+    const SVG_ICONS = {
+        "instagram": `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>`,
+        "linkedin": `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>`,
+        "twitter": `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
+        "x": `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
+        "youtube": `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`,
+        "spotify": `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.12-.779-.18-.899-.54-.12-.42.18-.78.54-.9 4.56-1.02 8.52-.6 11.64 1.32.42.18.48.66.3.102zM18.96 14.1c-.3.479-.9.6-1.38.3-3.24-2-8.16-2.58-11.999-1.38-.54.18-1.14-.12-1.32-.66-.18-.54.12-1.14.66-1.32 4.38-1.38 9.84-.72 13.56 1.56.48.3.6.9.3 1.5zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.18-1.26-.18-1.44-.78-.18-.6.18-1.26.78-1.44 4.26-1.26 11.28-1.02 15.72 1.62.54.3.72 1.02.42 1.56-.3.54-1.02.72-1.56.42z"/></svg>`,
+        "mail": `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>`,
+        "globe": `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`,
+        "briefcase": `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>`,
+        "book-open": `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>`
+    };
+
+    function getIconSvg(iconName) {
+        const key = (iconName || "globe").toLowerCase();
+        return SVG_ICONS[key] || `<i data-lucide="${key}"></i>`;
+    }
+
     // DOM Elements
     const elements = {
         // Site Content
@@ -209,7 +228,7 @@
                 a.rel = "noopener noreferrer";
                 a.className = "quick-social-icon";
                 a.title = `${item.platform} (${item.username})`;
-                a.innerHTML = `<i data-lucide="${getLucideIconName(item.icon)}"></i>`;
+                a.innerHTML = getIconSvg(item.icon);
                 elements.quickSocialBar.appendChild(a);
             });
         }
@@ -228,7 +247,7 @@
                 card.innerHTML = `
                     <div class="social-card-left">
                         <div class="social-icon-box">
-                            <i data-lucide="${getLucideIconName(item.icon)}"></i>
+                            ${getIconSvg(item.icon)}
                         </div>
                         <div class="social-meta">
                             <span class="social-platform">${escapeHtml(item.platform)}</span>
@@ -257,7 +276,7 @@
                 card.innerHTML = `
                     <div class="featured-top">
                         <div class="featured-icon">
-                            <i data-lucide="${getLucideIconName(item.icon)}"></i>
+                            ${getIconSvg(item.icon)}
                         </div>
                         ${item.badge ? `<span class="featured-badge">${escapeHtml(item.badge)}</span>` : ""}
                     </div>
@@ -594,7 +613,7 @@
             row.innerHTML = `
                 <div class="admin-item-left">
                     <div class="social-icon-box" style="width:34px; height:34px; color:${item.color};">
-                        <i data-lucide="${getLucideIconName(item.icon)}"></i>
+                        ${getIconSvg(item.icon)}
                     </div>
                     <div>
                         <strong>${escapeHtml(item.platform)}</strong>
@@ -642,7 +661,7 @@
             row.innerHTML = `
                 <div class="admin-item-left">
                     <div class="social-icon-box" style="width:34px; height:34px; color:var(--accent);">
-                        <i data-lucide="${getLucideIconName(item.icon)}"></i>
+                        ${getIconSvg(item.icon)}
                     </div>
                     <div>
                         <strong>${escapeHtml(item.title)}</strong>
@@ -730,16 +749,6 @@
         setTimeout(() => {
             toast.remove();
         }, 3500);
-    }
-
-    function getLucideIconName(icon) {
-        const iconMap = {
-            "twitter": "twitter",
-            "x": "twitter",
-            "mail": "mail",
-            "email": "mail"
-        };
-        return iconMap[icon] || icon || "globe";
     }
 
     function escapeHtml(str) {
