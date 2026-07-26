@@ -31,7 +31,6 @@
 
     // DOM Elements
     const elements = {
-        // Site Content
         fullName: document.getElementById("fullName"),
         profileTitle: document.getElementById("profileTitle"),
         profileTagline: document.getElementById("profileTagline"),
@@ -48,10 +47,8 @@
         copyEmailBtn: document.getElementById("copyEmailBtn"),
         currentYear: document.getElementById("currentYear"),
         
-        // Theme Toggle
         themeToggleBtn: document.getElementById("themeToggleBtn"),
         
-        // Login Modal
         adminLoginModal: document.getElementById("adminLoginModal"),
         adminLoginForm: document.getElementById("adminLoginForm"),
         adminPasscode: document.getElementById("adminPasscode"),
@@ -59,17 +56,14 @@
         loginErrorMsg: document.getElementById("loginErrorMsg"),
         closeLoginModalBtn: document.getElementById("closeLoginModalBtn"),
         
-        // Dashboard Modal
         adminDashboardModal: document.getElementById("adminDashboardModal"),
         closeDashboardBtn: document.getElementById("closeDashboardBtn"),
         exportConfigBtn: document.getElementById("exportConfigBtn"),
         dashExportBtn: document.getElementById("dashExportBtn"),
         
-        // Tabs
         tabBtns: document.querySelectorAll(".dash-tabs-nav .tab-btn"),
         tabPanes: document.querySelectorAll(".dash-tab-contents .tab-pane"),
         
-        // Profile Edit Form
         profileEditForm: document.getElementById("profileEditForm"),
         adminPhotoPreview: document.getElementById("adminPhotoPreview"),
         photoFileInput: document.getElementById("photoFileInput"),
@@ -84,15 +78,12 @@
         editStatusBadge: document.getElementById("editStatusBadge"),
         editTags: document.getElementById("editTags"),
         
-        // Social Tab
         addNewSocialBtn: document.getElementById("addNewSocialBtn"),
         adminSocialList: document.getElementById("adminSocialList"),
         
-        // Featured Tab
         addNewFeaturedBtn: document.getElementById("addNewFeaturedBtn"),
         adminFeaturedList: document.getElementById("adminFeaturedList"),
         
-        // Item Edit Modal
         itemEditModal: document.getElementById("itemEditModal"),
         itemEditModalTitle: document.getElementById("itemEditModalTitle"),
         closeItemEditBtn: document.getElementById("closeItemEditBtn"),
@@ -106,17 +97,14 @@
         itemIconInput: document.getElementById("itemIconInput"),
         itemColorInput: document.getElementById("itemColorInput"),
 
-        // Appearance
         themeSelectCards: document.querySelectorAll(".theme-select-card"),
         accentColorPicker: document.getElementById("accentColorPicker"),
 
-        // Supabase Tab
         supabaseConfigForm: document.getElementById("supabaseConfigForm"),
         supaUrlInput: document.getElementById("supaUrlInput"),
         supaKeyInput: document.getElementById("supaKeyInput"),
         supaTableNameInput: document.getElementById("supaTableNameInput"),
 
-        // Security & Backup
         changePasswordForm: document.getElementById("changePasswordForm"),
         currentPassInput: document.getElementById("currentPassInput"),
         newPassInput: document.getElementById("newPassInput"),
@@ -165,11 +153,16 @@
             console.error("State loading error:", e);
             state = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
         }
+
+        // Ensure default Supabase config fallback
+        if (!state.supabaseConfig || !state.supabaseConfig.url) {
+            state.supabaseConfig = DEFAULT_CONFIG.supabaseConfig;
+        }
     }
 
     function initSupabase() {
-        const supaUrl = state.supabaseConfig?.url || "";
-        const supaKey = state.supabaseConfig?.anonKey || "";
+        const supaUrl = state.supabaseConfig?.url || DEFAULT_CONFIG.supabaseConfig.url;
+        const supaKey = state.supabaseConfig?.anonKey || DEFAULT_CONFIG.supabaseConfig.anonKey;
 
         if (window.supabase && typeof window.supabase.createClient === "function" && supaUrl && supaKey) {
             try {
@@ -184,20 +177,29 @@
     async function syncStateFromSupabase() {
         if (!supabaseClient) return;
 
-        const tableName = state.supabaseConfig?.tableName || "site_config";
-        try {
-            const { data, error } = await supabaseClient
-                .from(tableName)
-                .select("data")
-                .eq("id", "main")
-                .single();
+        const tableNames = [
+            state.supabaseConfig?.tableName || "site_config",
+            "site_config",
+            "nisanbedia-db",
+            "nisanbedia_config"
+        ];
 
-            if (!error && data && data.data) {
-                state = { ...state, ...data.data };
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        for (const tableName of tableNames) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from(tableName)
+                    .select("data")
+                    .eq("id", "main")
+                    .single();
+
+                if (!error && data && data.data) {
+                    state = { ...state, ...data.data };
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                    return;
+                }
+            } catch (e) {
+                console.warn(`Supabase fetch from ${tableName} error:`, e);
             }
-        } catch (e) {
-            console.warn("Supabase fetch error:", e);
         }
     }
 
@@ -211,13 +213,23 @@
             // Save to Supabase Cloud DB if connected
             if (supabaseClient) {
                 const tableName = state.supabaseConfig?.tableName || "site_config";
+                
                 const { error } = await supabaseClient
                     .from(tableName)
                     .upsert({ id: "main", data: state, updated_at: new Date().toISOString() });
 
                 if (error) {
                     console.error("Supabase upsert error:", error);
-                    showToast("Yerel kaydedildi, fakat Supabase bulut güncellenemedi.", true);
+                    // Try fallback table 'site_config' if specified table failed
+                    const { error: fallbackErr } = await supabaseClient
+                        .from("site_config")
+                        .upsert({ id: "main", data: state, updated_at: new Date().toISOString() });
+                    
+                    if (fallbackErr) {
+                        showToast("Lütfen Supabase'de 'site_config' tablosunun açık olduğunu doğrulayın.", true);
+                    } else {
+                        showToast("Değişiklikler Supabase 'site_config' tablosuna başarıyla kaydedildi! ✨");
+                    }
                 } else {
                     showToast("Değişiklikler Supabase Bulut Veritabanına Anında İşlendi! ✨");
                 }
@@ -570,14 +582,14 @@
                 e.preventDefault();
                 if (!state.supabaseConfig) state.supabaseConfig = {};
 
-                state.supabaseConfig.url = elements.supaUrlInput.value.trim();
-                state.supabaseConfig.anonKey = elements.supaKeyInput.value.trim();
-                state.supabaseConfig.tableName = elements.supaTableNameInput.value.trim() || "site_config";
+                state.supabaseConfig.url = elements.supaUrlInput.value.trim() || DEFAULT_CONFIG.supabaseConfig.url;
+                state.supabaseConfig.anonKey = elements.supaKeyInput.value.trim() || DEFAULT_CONFIG.supabaseConfig.anonKey;
+                state.supabaseConfig.tableName = "site_config";
 
                 initSupabase();
 
                 if (supabaseClient) {
-                    showToast("Supabase istemcisi başlatıldı, bağlantı sınanıyor...");
+                    showToast("Supabase bağlandı! Test ediliyor...");
                     await saveState();
                 } else {
                     showToast("Geçersiz Supabase URL veya Anon Key!", true);
@@ -682,9 +694,9 @@
         }
 
         // Supabase Tab Fields
-        if (elements.supaUrlInput) elements.supaUrlInput.value = supabaseConfig?.url || "";
-        if (elements.supaKeyInput) elements.supaKeyInput.value = supabaseConfig?.anonKey || "";
-        if (elements.supaTableNameInput) elements.supaTableNameInput.value = supabaseConfig?.tableName || "site_config";
+        if (elements.supaUrlInput) elements.supaUrlInput.value = supabaseConfig?.url || DEFAULT_CONFIG.supabaseConfig.url;
+        if (elements.supaKeyInput) elements.supaKeyInput.value = supabaseConfig?.anonKey || DEFAULT_CONFIG.supabaseConfig.anonKey;
+        if (elements.supaTableNameInput) elements.supaTableNameInput.value = "site_config";
 
         renderAdminSocialList();
         renderAdminFeaturedList();

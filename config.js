@@ -6,10 +6,10 @@ const DEFAULT_CONFIG = {
     siteTitle: "Nisan Bedia Sağdıç | Resmi Web Sitesi",
     metaDescription: "Nisan Bedia Sağdıç - Kişisel web sitesi, sosyal medya hesapları ve iletişim bilgileri.",
     
-    // Supabase Bulut Veritabanı Yapılandırması
+    // Supabase Bulut Veritabanı Yapılandırması (Otomatik Bağlı)
     supabaseConfig: {
-        url: "",
-        anonKey: "",
+        url: "https://tfprjgqoluuvuwsfmubk.supabase.co",
+        anonKey: "sb_publishable_MMgrvknerQRofUHUzWTQkg_7zrDWRG_",
         tableName: "site_config"
     },
 
