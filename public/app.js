@@ -9,6 +9,7 @@
     // Application State
     let state = {};
     let supabaseClient = null;
+    let modalsInjected = false;
 
     // SVG Icon Map for High-Quality Vector Social Icons
     const SVG_ICONS = {
@@ -29,96 +30,14 @@
         return SVG_ICONS[key] || `<i data-lucide="${key}"></i>`;
     }
 
-    // DOM Elements
-    const elements = {
-        fullName: document.getElementById("fullName"),
-        profileTitle: document.getElementById("profileTitle"),
-        profileTagline: document.getElementById("profileTagline"),
-        profileBio: document.getElementById("profileBio"),
-        profileLocation: document.getElementById("profileLocation"),
-        profileEmail: document.getElementById("profileEmail"),
-        profilePhoto: document.getElementById("profilePhoto"),
-        navProfilePhoto: document.getElementById("navProfilePhoto"),
-        statusBadgeText: document.getElementById("statusBadgeText"),
-        statusBadge: document.getElementById("statusBadge"),
-        tagsContainer: document.getElementById("tagsContainer"),
-        quickSocialBar: document.getElementById("quickSocialBar"),
-        socialLinksGrid: document.getElementById("socialLinksGrid"),
-        featuredCardsGrid: document.getElementById("featuredCardsGrid"),
-        copyEmailBtn: document.getElementById("copyEmailBtn"),
-        currentYear: document.getElementById("currentYear"),
-        
-        themeToggleBtn: document.getElementById("themeToggleBtn"),
-        
-        adminLoginModal: document.getElementById("adminLoginModal"),
-        adminLoginForm: document.getElementById("adminLoginForm"),
-        adminPasscode: document.getElementById("adminPasscode"),
-        togglePassVisibility: document.getElementById("togglePassVisibility"),
-        loginErrorMsg: document.getElementById("loginErrorMsg"),
-        closeLoginModalBtn: document.getElementById("closeLoginModalBtn"),
-        
-        adminDashboardModal: document.getElementById("adminDashboardModal"),
-        closeDashboardBtn: document.getElementById("closeDashboardBtn"),
-        exportConfigBtn: document.getElementById("exportConfigBtn"),
-        dashExportBtn: document.getElementById("dashExportBtn"),
-        
-        tabBtns: document.querySelectorAll(".dash-tabs-nav .tab-btn"),
-        tabPanes: document.querySelectorAll(".dash-tab-contents .tab-pane"),
-        
-        profileEditForm: document.getElementById("profileEditForm"),
-        adminPhotoPreview: document.getElementById("adminPhotoPreview"),
-        photoFileInput: document.getElementById("photoFileInput"),
-        triggerFileSelect: document.getElementById("triggerFileSelect"),
-        editPhotoUrl: document.getElementById("editPhotoUrl"),
-        editFullName: document.getElementById("editFullName"),
-        editTitle: document.getElementById("editTitle"),
-        editTagline: document.getElementById("editTagline"),
-        editBio: document.getElementById("editBio"),
-        editLocation: document.getElementById("editLocation"),
-        editEmail: document.getElementById("editEmail"),
-        editStatusBadge: document.getElementById("editStatusBadge"),
-        editTags: document.getElementById("editTags"),
-        
-        addNewSocialBtn: document.getElementById("addNewSocialBtn"),
-        adminSocialList: document.getElementById("adminSocialList"),
-        
-        addNewFeaturedBtn: document.getElementById("addNewFeaturedBtn"),
-        adminFeaturedList: document.getElementById("adminFeaturedList"),
-        
-        itemEditModal: document.getElementById("itemEditModal"),
-        itemEditModalTitle: document.getElementById("itemEditModalTitle"),
-        closeItemEditBtn: document.getElementById("closeItemEditBtn"),
-        itemEditForm: document.getElementById("itemEditForm"),
-        itemEditId: document.getElementById("itemEditId"),
-        itemEditType: document.getElementById("itemEditType"),
-        itemTitleInput: document.getElementById("itemTitleInput"),
-        itemSubInput: document.getElementById("itemSubInput"),
-        itemUrlInput: document.getElementById("itemUrlInput"),
-        itemBadgeInput: document.getElementById("itemBadgeInput"),
-        itemIconInput: document.getElementById("itemIconInput"),
-        itemColorInput: document.getElementById("itemColorInput"),
-
-        themeSelectCards: document.querySelectorAll(".theme-select-card"),
-        accentColorPicker: document.getElementById("accentColorPicker"),
-
-        supabaseConfigForm: document.getElementById("supabaseConfigForm"),
-        supaUrlInput: document.getElementById("supaUrlInput"),
-        supaKeyInput: document.getElementById("supaKeyInput"),
-        supaTableNameInput: document.getElementById("supaTableNameInput"),
-
-        changePasswordForm: document.getElementById("changePasswordForm"),
-        currentPassInput: document.getElementById("currentPassInput"),
-        newPassInput: document.getElementById("newPassInput"),
-        importJsonInput: document.getElementById("importJsonInput"),
-        triggerImportBtn: document.getElementById("triggerImportBtn"),
-        resetDefaultsBtn: document.getElementById("resetDefaultsBtn"),
-        toastContainer: document.getElementById("toastContainer")
-    };
+    // DOM Elements Cache
+    let elements = {};
 
     /* ==========================================
        Initialization & Data Sync
        ========================================== */
     async function init() {
+        cacheDomElements();
         loadLocalState();
         applyAppearance();
         renderSiteContent();
@@ -139,16 +58,316 @@
         refreshLucideIcons();
     }
 
+    function cacheDomElements() {
+        elements = {
+            fullName: document.getElementById("fullName"),
+            profileTitle: document.getElementById("profileTitle"),
+            profileTagline: document.getElementById("profileTagline"),
+            profileBio: document.getElementById("profileBio"),
+            profileLocation: document.getElementById("profileLocation"),
+            profileEmail: document.getElementById("profileEmail"),
+            profilePhoto: document.getElementById("profilePhoto"),
+            navProfilePhoto: document.getElementById("navProfilePhoto"),
+            statusBadgeText: document.getElementById("statusBadgeText"),
+            statusBadge: document.getElementById("statusBadge"),
+            tagsContainer: document.getElementById("tagsContainer"),
+            quickSocialBar: document.getElementById("quickSocialBar"),
+            socialLinksGrid: document.getElementById("socialLinksGrid"),
+            featuredCardsGrid: document.getElementById("featuredCardsGrid"),
+            copyEmailBtn: document.getElementById("copyEmailBtn"),
+            currentYear: document.getElementById("currentYear"),
+            themeToggleBtn: document.getElementById("themeToggleBtn"),
+            toastContainer: document.getElementById("toastContainer")
+        };
+    }
+
     function checkSuperadminxRoute() {
         const path = window.location.pathname.toLowerCase();
         const search = window.location.search.toLowerCase();
         const hash = window.location.hash.toLowerCase();
 
         if (path.includes("superadminx") || search.includes("superadminx") || hash.includes("superadminx")) {
+            injectAdminModals();
             setTimeout(() => {
                 openLoginModal();
             }, 300);
         }
+    }
+
+    function injectAdminModals() {
+        if (modalsInjected) return;
+        modalsInjected = true;
+
+        const modalsContainer = document.createElement("div");
+        modalsContainer.id = "dynamicAdminContainer";
+        modalsContainer.innerHTML = `
+            <!-- ADMIN LOGIN MODAL -->
+            <div id="adminLoginModal" class="modal-backdrop hidden">
+                <div class="modal-box glass-modal login-modal">
+                    <button class="modal-close-btn" id="closeLoginModalBtn">&times;</button>
+                    <div class="modal-header">
+                        <div class="modal-icon-badge"><i data-lucide="lock"></i></div>
+                        <h3>Yönetim Paneli Girişi</h3>
+                        <p>nisanbedia.com içeriklerini değiştirmek için şifrenizi girin.</p>
+                    </div>
+                    <form id="adminLoginForm" class="login-form">
+                        <div class="form-group">
+                            <label for="adminPasscode">Admin Şifresi</label>
+                            <div class="password-input-wrap">
+                                <input type="password" id="adminPasscode" placeholder="Şifrenizi girin (Varsayılan: 1234)" required autocomplete="current-password">
+                                <button type="button" id="togglePassVisibility" class="pass-toggle"><i data-lucide="eye"></i></button>
+                            </div>
+                        </div>
+                        <div id="loginErrorMsg" class="error-msg hidden">Hatalı şifre! Lütfen tekrar deneyin.</div>
+                        <button type="submit" class="btn btn-primary full-width">
+                            <i data-lucide="log-in"></i> Giriş Yap
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ADMIN DASHBOARD MODAL -->
+            <div id="adminDashboardModal" class="modal-backdrop hidden">
+                <div class="modal-box glass-modal dashboard-modal">
+                    <div class="dashboard-header">
+                        <div class="dash-title">
+                            <i data-lucide="sliders" class="dash-title-icon"></i>
+                            <div>
+                                <h2>Yönetim Paneli (Superadminx)</h2>
+                                <span class="dash-subtitle">nisanbedia.com Canlı İçerik Düzenleyici & Supabase Bulut Senkronu</span>
+                            </div>
+                        </div>
+                        <div class="dash-header-actions">
+                            <button id="exportConfigBtn" class="btn btn-secondary btn-sm" title="Yedek İndir (JSON)">
+                                <i data-lucide="download"></i> Yedek İndir
+                            </button>
+                            <button id="closeDashboardBtn" class="modal-close-btn">&times;</button>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-body">
+                        <div class="dash-tabs-nav">
+                            <button class="tab-btn active" data-tab="tabProfile"><i data-lucide="user"></i> <span>Profil Bilgileri</span></button>
+                            <button class="tab-btn" data-tab="tabSocial"><i data-lucide="share-2"></i> <span>Sosyal Medya</span></button>
+                            <button class="tab-btn" data-tab="tabFeatured"><i data-lucide="link"></i> <span>Öne Çıkanlar</span></button>
+                            <button class="tab-btn" data-tab="tabAppearance"><i data-lucide="palette"></i> <span>Görünüm & Tema</span></button>
+                            <button class="tab-btn" data-tab="tabSupabase"><i data-lucide="database"></i> <span>Supabase Bulut</span></button>
+                            <button class="tab-btn" data-tab="tabSettings"><i data-lucide="shield"></i> <span>Şifre & Yedek</span></button>
+                        </div>
+
+                        <div class="dash-tab-contents">
+                            <div id="tabProfile" class="tab-pane active">
+                                <h3>Profil ve Biyografi Düzenle</h3>
+                                <p class="tab-desc">Sitede görünen ad-soyad, unvan, fotoğraf ve açıklama bilgilerini güncelleyin.</p>
+                                <form id="profileEditForm" class="admin-form">
+                                    <div class="photo-edit-group">
+                                        <div class="photo-preview-wrap">
+                                            <img id="adminPhotoPreview" src="nisan_bedia_portrait.jpg" alt="Önizleme">
+                                        </div>
+                                        <div class="photo-inputs">
+                                            <label>Profil Fotoğrafı</label>
+                                            <div class="form-group inline-upload">
+                                                <input type="file" id="photoFileInput" accept="image/*" class="file-input-hidden">
+                                                <button type="button" id="triggerFileSelect" class="btn btn-secondary btn-sm">
+                                                    <i data-lucide="upload"></i> Cihazdan Fotoğraf Seç
+                                                </button>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="text" id="editPhotoUrl" placeholder="Veya Fotoğraf Bağlantısı (URL)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group"><label for="editFullName">Ad Soyad</label><input type="text" id="editFullName" required></div>
+                                        <div class="form-group"><label for="editTitle">Unvan / Meslek</label><input type="text" id="editTitle" required></div>
+                                    </div>
+                                    <div class="form-group"><label for="editTagline">Kısa Mottolar / Slogan</label><input type="text" id="editTagline"></div>
+                                    <div class="form-group"><label for="editBio">Biyografi Metni (Hakkımda)</label><textarea id="editBio" rows="4"></textarea></div>
+                                    <div class="form-row">
+                                        <div class="form-group"><label for="editLocation">Şehir / Konum</label><input type="text" id="editLocation"></div>
+                                        <div class="form-group"><label for="editEmail">E-posta Adresi</label><input type="email" id="editEmail"></div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group"><label for="editStatusBadge">Durum Rozeti</label><input type="text" id="editStatusBadge"></div>
+                                        <div class="form-group"><label for="editTags">Etiketler / İlgi Alanları</label><input type="text" id="editTags"></div>
+                                    </div>
+                                    <div class="form-actions"><button type="submit" class="btn btn-primary"><i data-lucide="save"></i> Değişiklikleri Kaydet & Buluta Gönder</button></div>
+                                </form>
+                            </div>
+
+                            <div id="tabSocial" class="tab-pane">
+                                <div class="pane-header">
+                                    <div><h3>Sosyal Medya Linkleri</h3><p class="tab-desc">Ziyaretçilerinizin size ulaşabileceği hesapları yönetin.</p></div>
+                                    <button id="addNewSocialBtn" class="btn btn-primary btn-sm"><i data-lucide="plus"></i> Yeni Hesap Ekle</button>
+                                </div>
+                                <div id="adminSocialList" class="admin-items-list"></div>
+                            </div>
+
+                            <div id="tabFeatured" class="tab-pane">
+                                <div class="pane-header">
+                                    <div><h3>Öne Çıkanlar & Portfolyo</h3><p class="tab-desc">Özel kartları yönetin.</p></div>
+                                    <button id="addNewFeaturedBtn" class="btn btn-primary btn-sm"><i data-lucide="plus"></i> Yeni Kart Ekle</button>
+                                </div>
+                                <div id="adminFeaturedList" class="admin-items-list"></div>
+                            </div>
+
+                            <div id="tabAppearance" class="tab-pane">
+                                <h3>Görünüm ve Renk Paleti</h3>
+                                <div class="appearance-settings">
+                                    <div class="setting-group">
+                                        <label>Varsayılan Tema</label>
+                                        <div class="theme-options">
+                                            <button class="theme-select-card" data-theme-val="dark"><div class="theme-preview dark-preview"></div><span>Koyu Tema</span></button>
+                                            <button class="theme-select-card" data-theme-val="light"><div class="theme-preview light-preview"></div><span>Açık Tema</span></button>
+                                        </div>
+                                    </div>
+                                    <div class="setting-group">
+                                        <label>Vurgu Rengi Paleti</label>
+                                        <div class="color-options" id="accentColorPicker">
+                                            <button class="color-swatch rose active" data-color="rose"></button>
+                                            <button class="color-swatch emerald" data-color="emerald"></button>
+                                            <button class="color-swatch sapphire" data-color="sapphire"></button>
+                                            <button class="color-swatch gold" data-color="gold"></button>
+                                            <button class="color-swatch violet" data-color="violet"></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="tabSupabase" class="tab-pane">
+                                <h3>Supabase Bulut Veritabanı Entegrasyonu</h3>
+                                <form id="supabaseConfigForm" class="admin-form">
+                                    <div class="form-group"><label for="supaUrlInput">Supabase Proje URL</label><input type="url" id="supaUrlInput"></div>
+                                    <div class="form-group"><label for="supaKeyInput">Supabase Anon Key</label><input type="password" id="supaKeyInput"></div>
+                                    <div class="form-group"><label for="supaTableNameInput">Tablo Adı</label><input type="text" id="supaTableNameInput" value="site_config"></div>
+                                    <div class="form-actions"><button type="submit" class="btn btn-primary"><i data-lucide="link"></i> Kaydet ve Test Et</button></div>
+                                </form>
+                            </div>
+
+                            <div id="tabSettings" class="tab-pane">
+                                <h3>Güvenlik ve Veri Yönetimi</h3>
+                                <div class="settings-box-grid">
+                                    <div class="setting-card">
+                                        <h4>Admin Şifresi Değiştir</h4>
+                                        <form id="changePasswordForm">
+                                            <div class="form-group"><label for="currentPassInput">Mevcut Şifre</label><input type="password" id="currentPassInput" required></div>
+                                            <div class="form-group"><label for="newPassInput">Yeni Şifre</label><input type="password" id="newPassInput" required></div>
+                                            <button type="submit" class="btn btn-secondary btn-sm">Güncelle</button>
+                                        </form>
+                                    </div>
+                                    <div class="setting-card">
+                                        <h4>Veri Yedekleme</h4>
+                                        <div class="backup-actions">
+                                            <button id="dashExportBtn" class="btn btn-secondary btn-sm"><i data-lucide="download"></i> Yedeği İndir (.json)</button>
+                                            <div class="import-wrapper">
+                                                <input type="file" id="importJsonInput" accept=".json" class="file-input-hidden">
+                                                <button id="triggerImportBtn" class="btn btn-secondary btn-sm"><i data-lucide="upload"></i> Yedeği Yükle</button>
+                                            </div>
+                                        </div>
+                                        <div class="reset-danger-zone">
+                                            <button id="resetDefaultsBtn" class="btn btn-danger-link btn-sm"><i data-lucide="rotate-ccw"></i> Fabrika Ayarlarına Dön</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ITEM EDIT MODAL -->
+            <div id="itemEditModal" class="modal-backdrop hidden">
+                <div class="modal-box glass-modal item-modal">
+                    <button id="closeItemEditBtn" class="modal-close-btn">&times;</button>
+                    <div class="modal-header"><h3 id="itemEditModalTitle">Öğe Düzenle</h3></div>
+                    <form id="itemEditForm">
+                        <input type="hidden" id="itemEditId"><input type="hidden" id="itemEditType">
+                        <div class="form-group"><label for="itemTitleInput">Başlık / Platform</label><input type="text" id="itemTitleInput" required></div>
+                        <div class="form-group"><label for="itemSubInput">Kullanıcı Adı / Açıklama</label><input type="text" id="itemSubInput"></div>
+                        <div class="form-group"><label for="itemUrlInput">Bağlantı Adresi</label><input type="url" id="itemUrlInput" required></div>
+                        <div class="form-row">
+                            <div class="form-group"><label for="itemBadgeInput">Buton Metni</label><input type="text" id="itemBadgeInput"></div>
+                            <div class="form-group"><label for="itemIconInput">İkon Adı</label>
+                                <select id="itemIconInput">
+                                    <option value="instagram">Instagram</option><option value="linkedin">LinkedIn</option><option value="twitter">Twitter / X</option><option value="youtube">YouTube</option><option value="spotify">Spotify</option><option value="mail">Mail</option><option value="globe">Web</option><option value="briefcase">Portfolyo</option><option value="book-open">Blog</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group"><label for="itemColorInput">Özel Renk</label><input type="color" id="itemColorInput" value="#E1306C"></div>
+                        <div class="form-actions"><button type="submit" class="btn btn-primary full-width"><i data-lucide="check"></i> Kaydet</button></div>
+                    </form>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modalsContainer);
+        cacheAdminDomElements();
+        setupAdminEventListeners();
+        refreshLucideIcons();
+    }
+
+    function cacheAdminDomElements() {
+        elements.adminLoginModal = document.getElementById("adminLoginModal");
+        elements.adminLoginForm = document.getElementById("adminLoginForm");
+        elements.adminPasscode = document.getElementById("adminPasscode");
+        elements.togglePassVisibility = document.getElementById("togglePassVisibility");
+        elements.loginErrorMsg = document.getElementById("loginErrorMsg");
+        elements.closeLoginModalBtn = document.getElementById("closeLoginModalBtn");
+        
+        elements.adminDashboardModal = document.getElementById("adminDashboardModal");
+        elements.closeDashboardBtn = document.getElementById("closeDashboardBtn");
+        elements.exportConfigBtn = document.getElementById("exportConfigBtn");
+        elements.dashExportBtn = document.getElementById("dashExportBtn");
+        
+        elements.tabBtns = document.querySelectorAll(".dash-tabs-nav .tab-btn");
+        elements.tabPanes = document.querySelectorAll(".dash-tab-contents .tab-pane");
+        
+        elements.profileEditForm = document.getElementById("profileEditForm");
+        elements.adminPhotoPreview = document.getElementById("adminPhotoPreview");
+        elements.photoFileInput = document.getElementById("photoFileInput");
+        elements.triggerFileSelect = document.getElementById("triggerFileSelect");
+        elements.editPhotoUrl = document.getElementById("editPhotoUrl");
+        elements.editFullName = document.getElementById("editFullName");
+        elements.editTitle = document.getElementById("editTitle");
+        elements.editTagline = document.getElementById("editTagline");
+        elements.editBio = document.getElementById("editBio");
+        elements.editLocation = document.getElementById("editLocation");
+        elements.editEmail = document.getElementById("editEmail");
+        elements.editStatusBadge = document.getElementById("editStatusBadge");
+        elements.editTags = document.getElementById("editTags");
+        
+        elements.addNewSocialBtn = document.getElementById("addNewSocialBtn");
+        elements.adminSocialList = document.getElementById("adminSocialList");
+        
+        elements.addNewFeaturedBtn = document.getElementById("addNewFeaturedBtn");
+        elements.adminFeaturedList = document.getElementById("adminFeaturedList");
+        
+        elements.itemEditModal = document.getElementById("itemEditModal");
+        elements.itemEditModalTitle = document.getElementById("itemEditModalTitle");
+        elements.closeItemEditBtn = document.getElementById("closeItemEditBtn");
+        elements.itemEditForm = document.getElementById("itemEditForm");
+        elements.itemEditId = document.getElementById("itemEditId");
+        elements.itemEditType = document.getElementById("itemEditType");
+        elements.itemTitleInput = document.getElementById("itemTitleInput");
+        elements.itemSubInput = document.getElementById("itemSubInput");
+        elements.itemUrlInput = document.getElementById("itemUrlInput");
+        elements.itemBadgeInput = document.getElementById("itemBadgeInput");
+        elements.itemIconInput = document.getElementById("itemIconInput");
+        elements.itemColorInput = document.getElementById("itemColorInput");
+
+        elements.themeSelectCards = document.querySelectorAll(".theme-select-card");
+        elements.accentColorPicker = document.getElementById("accentColorPicker");
+
+        elements.supabaseConfigForm = document.getElementById("supabaseConfigForm");
+        elements.supaUrlInput = document.getElementById("supaUrlInput");
+        elements.supaKeyInput = document.getElementById("supaKeyInput");
+        elements.supaTableNameInput = document.getElementById("supaTableNameInput");
+
+        elements.changePasswordForm = document.getElementById("changePasswordForm");
+        elements.currentPassInput = document.getElementById("currentPassInput");
+        elements.newPassInput = document.getElementById("newPassInput");
+        elements.importJsonInput = document.getElementById("importJsonInput");
+        elements.triggerImportBtn = document.getElementById("triggerImportBtn");
+        elements.resetDefaultsBtn = document.getElementById("resetDefaultsBtn");
     }
 
     function loadLocalState() {
@@ -214,12 +433,10 @@
 
     async function saveState() {
         try {
-            // Save to LocalStorage
             localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
             renderSiteContent();
             applyAppearance();
 
-            // Save to Supabase Cloud DB if connected
             if (supabaseClient) {
                 const tableName = state.supabaseConfig?.tableName || "site_config";
                 
@@ -270,7 +487,6 @@
     function renderSiteContent() {
         const { profile, socialLinks, featuredCards } = state;
 
-        // Profile Info
         if (elements.fullName) elements.fullName.textContent = profile.fullName;
         if (elements.profileTitle) elements.profileTitle.textContent = profile.title;
         if (elements.profileTagline) elements.profileTagline.textContent = profile.tagline;
@@ -286,10 +502,8 @@
             elements.navProfilePhoto.src = profile.photoUrl;
         }
 
-        // Title Tag
         document.title = `${profile.fullName} | Resmi Web Sitesi`;
 
-        // Tags
         if (elements.tagsContainer) {
             elements.tagsContainer.innerHTML = "";
             (profile.tags || []).forEach(tag => {
@@ -300,7 +514,6 @@
             });
         }
 
-        // Quick Social Header Bar
         if (elements.quickSocialBar) {
             elements.quickSocialBar.innerHTML = "";
             socialLinks.filter(s => s.enabled !== false).forEach(item => {
@@ -315,7 +528,6 @@
             });
         }
 
-        // Social Links Cards Grid
         if (elements.socialLinksGrid) {
             elements.socialLinksGrid.innerHTML = "";
             socialLinks.filter(s => s.enabled !== false).forEach(item => {
@@ -345,7 +557,6 @@
             });
         }
 
-        // Featured Cards Grid
         if (elements.featuredCardsGrid) {
             elements.featuredCardsGrid.innerHTML = "";
             (featuredCards || []).forEach(item => {
@@ -386,16 +597,16 @@
         document.documentElement.setAttribute("data-theme", mode);
         document.documentElement.setAttribute("data-accent", accent);
 
-        // Update Appearance Selection Cards in Admin
-        elements.themeSelectCards.forEach(card => {
-            if (card.getAttribute("data-theme-val") === mode) {
-                card.classList.add("active");
-            } else {
-                card.classList.remove("active");
-            }
-        });
+        if (elements.themeSelectCards) {
+            elements.themeSelectCards.forEach(card => {
+                if (card.getAttribute("data-theme-val") === mode) {
+                    card.classList.add("active");
+                } else {
+                    card.classList.remove("active");
+                }
+            });
+        }
 
-        // Update Color Swatches
         if (elements.accentColorPicker) {
             const swatches = elements.accentColorPicker.querySelectorAll(".color-swatch");
             swatches.forEach(swatch => {
@@ -412,171 +623,168 @@
        Event Listeners & Admin Controllers
        ========================================== */
     function setupEventListeners() {
-        // Theme Toggle Button
-        elements.themeToggleBtn.addEventListener("click", () => {
-            state.appearance.themeMode = state.appearance.themeMode === "dark" ? "light" : "dark";
-            saveState();
-        });
-
-        // Copy Email Pill
-        elements.copyEmailBtn.addEventListener("click", () => {
-            const email = state.profile.email;
-            navigator.clipboard.writeText(email).then(() => {
-                showToast(`E-posta kopyalandı: ${email}`);
-            }).catch(() => {
-                showToast(`E-posta: ${email}`);
+        if (elements.themeToggleBtn) {
+            elements.themeToggleBtn.addEventListener("click", () => {
+                state.appearance.themeMode = state.appearance.themeMode === "dark" ? "light" : "dark";
+                saveState();
             });
-        });
+        }
 
-        // Modal Close Buttons
+        if (elements.copyEmailBtn) {
+            elements.copyEmailBtn.addEventListener("click", () => {
+                const email = state.profile.email;
+                navigator.clipboard.writeText(email).then(() => {
+                    showToast(`E-posta kopyalandı: ${email}`);
+                }).catch(() => {
+                    showToast(`E-posta: ${email}`);
+                });
+            });
+        }
+    }
+
+    function setupAdminEventListeners() {
         if (elements.closeLoginModalBtn) elements.closeLoginModalBtn.addEventListener("click", closeLoginModal);
         if (elements.closeDashboardBtn) elements.closeDashboardBtn.addEventListener("click", closeDashboardModal);
 
-        // Toggle Password Visibility
-        elements.togglePassVisibility.addEventListener("click", () => {
-            const isPass = elements.adminPasscode.type === "password";
-            elements.adminPasscode.type = isPass ? "text" : "password";
-        });
-
-        // Login Form Submit
-        elements.adminLoginForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const inputPass = elements.adminPasscode.value.trim();
-            const currentPass = state.adminPassword || DEFAULT_CONFIG.adminPassword;
-
-            if (inputPass === currentPass) {
-                elements.loginErrorMsg.classList.add("hidden");
-                closeLoginModal();
-                openDashboardModal();
-                elements.adminPasscode.value = "";
-            } else {
-                elements.loginErrorMsg.classList.remove("hidden");
-            }
-        });
-
-        // Dashboard Tabs Navigation
-        elements.tabBtns.forEach(btn => {
-            btn.addEventListener("click", () => {
-                const targetTab = btn.getAttribute("data-tab");
-                
-                elements.tabBtns.forEach(b => b.classList.remove("active"));
-                elements.tabPanes.forEach(p => p.classList.remove("active"));
-
-                btn.classList.add("active");
-                document.getElementById(targetTab)?.classList.add("active");
+        if (elements.togglePassVisibility) {
+            elements.togglePassVisibility.addEventListener("click", () => {
+                const isPass = elements.adminPasscode.type === "password";
+                elements.adminPasscode.type = isPass ? "text" : "password";
             });
-        });
+        }
 
-        // Profile Form Submit
-        elements.profileEditForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            state.profile.fullName = elements.editFullName.value.trim();
-            state.profile.title = elements.editTitle.value.trim();
-            state.profile.tagline = elements.editTagline.value.trim();
-            state.profile.bio = elements.editBio.value.trim();
-            state.profile.location = elements.editLocation.value.trim();
-            state.profile.email = elements.editEmail.value.trim();
-            state.profile.statusBadge = elements.editStatusBadge.value.trim();
-            
-            const photoUrlInput = elements.editPhotoUrl.value.trim();
-            if (photoUrlInput) {
-                state.profile.photoUrl = photoUrlInput;
-            }
+        if (elements.adminLoginForm) {
+            elements.adminLoginForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const inputPass = elements.adminPasscode.value.trim();
+                const currentPass = state.adminPassword || DEFAULT_CONFIG.adminPassword;
 
-            // Tags Split
-            const tagsRaw = elements.editTags.value;
-            state.profile.tags = tagsRaw.split(",").map(t => t.trim()).filter(Boolean);
-
-            saveState();
-        });
-
-        // Photo Upload File Trigger
-        elements.triggerFileSelect.addEventListener("click", () => {
-            elements.photoFileInput.click();
-        });
-
-        elements.photoFileInput.addEventListener("change", (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (evt) {
-                    const base64Img = evt.target.result;
-                    state.profile.photoUrl = base64Img;
-                    elements.adminPhotoPreview.src = base64Img;
-                    elements.editPhotoUrl.value = "";
-                    showToast("Profil fotoğrafı güncellendi.");
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // Add Social Link Btn
-        elements.addNewSocialBtn.addEventListener("click", () => {
-            openItemEditModal("social", null);
-        });
-
-        // Add Featured Card Btn
-        elements.addNewFeaturedBtn.addEventListener("click", () => {
-            openItemEditModal("featured", null);
-        });
-
-        // Close Item Edit Modal
-        elements.closeItemEditBtn.addEventListener("click", () => {
-            elements.itemEditModal.classList.add("hidden");
-        });
-
-        // Item Form Submit (Add/Edit)
-        elements.itemEditForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const id = elements.itemEditId.value;
-            const type = elements.itemEditType.value;
-
-            const newItem = {
-                id: id || Date.now().toString(),
-                platform: elements.itemTitleInput.value.trim(),
-                title: elements.itemTitleInput.value.trim(),
-                username: elements.itemSubInput.value.trim(),
-                description: elements.itemSubInput.value.trim(),
-                url: elements.itemUrlInput.value.trim(),
-                badge: elements.itemBadgeInput.value.trim(),
-                icon: elements.itemIconInput.value,
-                color: elements.itemColorInput.value,
-                enabled: true
-            };
-
-            if (type === "social") {
-                if (id) {
-                    const index = state.socialLinks.findIndex(x => x.id === id);
-                    if (index !== -1) state.socialLinks[index] = { ...state.socialLinks[index], ...newItem };
+                if (inputPass === currentPass) {
+                    elements.loginErrorMsg.classList.add("hidden");
+                    closeLoginModal();
+                    openDashboardModal();
+                    elements.adminPasscode.value = "";
                 } else {
-                    state.socialLinks.push(newItem);
+                    elements.loginErrorMsg.classList.remove("hidden");
                 }
-                renderAdminSocialList();
-            } else if (type === "featured") {
-                if (!state.featuredCards) state.featuredCards = [];
-                if (id) {
-                    const index = state.featuredCards.findIndex(x => x.id === id);
-                    if (index !== -1) state.featuredCards[index] = { ...state.featuredCards[index], ...newItem };
-                } else {
-                    state.featuredCards.push(newItem);
+            });
+        }
+
+        if (elements.tabBtns) {
+            elements.tabBtns.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const targetTab = btn.getAttribute("data-tab");
+                    elements.tabBtns.forEach(b => b.classList.remove("active"));
+                    elements.tabPanes.forEach(p => p.classList.remove("active"));
+                    btn.classList.add("active");
+                    document.getElementById(targetTab)?.classList.add("active");
+                });
+            });
+        }
+
+        if (elements.profileEditForm) {
+            elements.profileEditForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                state.profile.fullName = elements.editFullName.value.trim();
+                state.profile.title = elements.editTitle.value.trim();
+                state.profile.tagline = elements.editTagline.value.trim();
+                state.profile.bio = elements.editBio.value.trim();
+                state.profile.location = elements.editLocation.value.trim();
+                state.profile.email = elements.editEmail.value.trim();
+                state.profile.statusBadge = elements.editStatusBadge.value.trim();
+                
+                const photoUrlInput = elements.editPhotoUrl.value.trim();
+                if (photoUrlInput) {
+                    state.profile.photoUrl = photoUrlInput;
                 }
-                renderAdminFeaturedList();
-            }
 
-            saveState();
-            elements.itemEditModal.classList.add("hidden");
-        });
+                const tagsRaw = elements.editTags.value;
+                state.profile.tags = tagsRaw.split(",").map(t => t.trim()).filter(Boolean);
 
-        // Appearance Theme Selection
-        elements.themeSelectCards.forEach(card => {
-            card.addEventListener("click", () => {
-                const selectedTheme = card.getAttribute("data-theme-val");
-                state.appearance.themeMode = selectedTheme;
                 saveState();
             });
-        });
+        }
 
-        // Accent Color Selection
+        if (elements.triggerFileSelect) {
+            elements.triggerFileSelect.addEventListener("click", () => {
+                elements.photoFileInput.click();
+            });
+        }
+
+        if (elements.photoFileInput) {
+            elements.photoFileInput.addEventListener("change", (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (evt) {
+                        const base64Img = evt.target.result;
+                        state.profile.photoUrl = base64Img;
+                        elements.adminPhotoPreview.src = base64Img;
+                        elements.editPhotoUrl.value = "";
+                        showToast("Profil fotoğrafı güncellendi.");
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        if (elements.addNewSocialBtn) elements.addNewSocialBtn.addEventListener("click", () => openItemEditModal("social", null));
+        if (elements.addNewFeaturedBtn) elements.addNewFeaturedBtn.addEventListener("click", () => openItemEditModal("featured", null));
+        if (elements.closeItemEditBtn) elements.closeItemEditBtn.addEventListener("click", () => elements.itemEditModal.classList.add("hidden"));
+
+        if (elements.itemEditForm) {
+            elements.itemEditForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const id = elements.itemEditId.value;
+                const type = elements.itemEditType.value;
+
+                const newItem = {
+                    id: id || Date.now().toString(),
+                    platform: elements.itemTitleInput.value.trim(),
+                    title: elements.itemTitleInput.value.trim(),
+                    username: elements.itemSubInput.value.trim(),
+                    description: elements.itemSubInput.value.trim(),
+                    url: elements.itemUrlInput.value.trim(),
+                    badge: elements.itemBadgeInput.value.trim(),
+                    icon: elements.itemIconInput.value,
+                    color: elements.itemColorInput.value,
+                    enabled: true
+                };
+
+                if (type === "social") {
+                    if (id) {
+                        const index = state.socialLinks.findIndex(x => x.id === id);
+                        if (index !== -1) state.socialLinks[index] = { ...state.socialLinks[index], ...newItem };
+                    } else {
+                        state.socialLinks.push(newItem);
+                    }
+                    renderAdminSocialList();
+                } else if (type === "featured") {
+                    if (!state.featuredCards) state.featuredCards = [];
+                    if (id) {
+                        const index = state.featuredCards.findIndex(x => x.id === id);
+                        if (index !== -1) state.featuredCards[index] = { ...state.featuredCards[index], ...newItem };
+                    } else {
+                        state.featuredCards.push(newItem);
+                    }
+                    renderAdminFeaturedList();
+                }
+
+                saveState();
+                elements.itemEditModal.classList.add("hidden");
+            });
+        }
+
+        if (elements.themeSelectCards) {
+            elements.themeSelectCards.forEach(card => {
+                card.addEventListener("click", () => {
+                    const selectedTheme = card.getAttribute("data-theme-val");
+                    state.appearance.themeMode = selectedTheme;
+                    saveState();
+                });
+            });
+        }
+
         if (elements.accentColorPicker) {
             elements.accentColorPicker.addEventListener("click", (e) => {
                 const swatch = e.target.closest(".color-swatch");
@@ -587,7 +795,6 @@
             });
         }
 
-        // Supabase Config Form Submit
         if (elements.supabaseConfigForm) {
             elements.supabaseConfigForm.addEventListener("submit", async (e) => {
                 e.preventDefault();
@@ -608,103 +815,109 @@
             });
         }
 
-        // Change Admin Password Form
-        elements.changePasswordForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const curr = elements.currentPassInput.value.trim();
-            const next = elements.newPassInput.value.trim();
-            const actualCurr = state.adminPassword || DEFAULT_CONFIG.adminPassword;
+        if (elements.changePasswordForm) {
+            elements.changePasswordForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const curr = elements.currentPassInput.value.trim();
+                const next = elements.newPassInput.value.trim();
+                const actualCurr = state.adminPassword || DEFAULT_CONFIG.adminPassword;
 
-            if (curr !== actualCurr) {
-                showToast("Mevcut şifreniz hatalı!", true);
-                return;
-            }
+                if (curr !== actualCurr) {
+                    showToast("Mevcut şifreniz hatalı!", true);
+                    return;
+                }
 
-            state.adminPassword = next;
-            saveState();
-            elements.currentPassInput.value = "";
-            elements.newPassInput.value = "";
-            showToast("Admin şifreniz başarıyla değiştirildi.");
-        });
-
-        // Export Config JSON
-        elements.exportConfigBtn.addEventListener("click", exportConfigJSON);
-        elements.dashExportBtn.addEventListener("click", exportConfigJSON);
-
-        // Import Config JSON
-        elements.triggerImportBtn.addEventListener("click", () => {
-            elements.importJsonInput.click();
-        });
-
-        elements.importJsonInput.addEventListener("change", (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (evt) {
-                    try {
-                        const importedState = JSON.parse(evt.target.result);
-                        state = importedState;
-                        saveState();
-                        populateDashboardFields();
-                        showToast("Site yedek verisi başarıyla yüklendi!");
-                    } catch (err) {
-                        showToast("Geçersiz JSON yedek dosyası!", true);
-                    }
-                };
-                reader.readAsText(file);
-            }
-        });
-
-        // Reset to Defaults
-        elements.resetDefaultsBtn.addEventListener("click", () => {
-            if (confirm("Tüm değişiklikler sıfırlanacak ve fabrika ayarlarına dönülecektir. Emin misiniz?")) {
-                state = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+                state.adminPassword = next;
                 saveState();
-                populateDashboardFields();
-                showToast("Fabrika ayarlarına dönüldü.");
-            }
-        });
+                elements.currentPassInput.value = "";
+                elements.newPassInput.value = "";
+                showToast("Admin şifreniz başarıyla değiştirildi.");
+            });
+        }
+
+        if (elements.exportConfigBtn) elements.exportConfigBtn.addEventListener("click", exportConfigJSON);
+        if (elements.dashExportBtn) elements.dashExportBtn.addEventListener("click", exportConfigJSON);
+
+        if (elements.triggerImportBtn) {
+            elements.triggerImportBtn.addEventListener("click", () => {
+                elements.importJsonInput.click();
+            });
+        }
+
+        if (elements.importJsonInput) {
+            elements.importJsonInput.addEventListener("change", (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (evt) {
+                        try {
+                            const importedState = JSON.parse(evt.target.result);
+                            state = importedState;
+                            saveState();
+                            populateDashboardFields();
+                            showToast("Site yedek verisi başarıyla yüklendi!");
+                        } catch (err) {
+                            showToast("Geçersiz JSON yedek dosyası!", true);
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            });
+        }
+
+        if (elements.resetDefaultsBtn) {
+            elements.resetDefaultsBtn.addEventListener("click", () => {
+                if (confirm("Tüm değişiklikler sıfırlanacak ve fabrika ayarlarına dönülecektir. Emin misiniz?")) {
+                    state = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+                    saveState();
+                    populateDashboardFields();
+                    showToast("Fabrika ayarlarına dönüldü.");
+                }
+            });
+        }
     }
 
     /* ==========================================
        Modals & Admin Helper Actions
        ========================================== */
     function openLoginModal() {
-        elements.adminLoginModal.classList.remove("hidden");
-        elements.adminPasscode.focus();
+        injectAdminModals();
+        if (elements.adminLoginModal) {
+            elements.adminLoginModal.classList.remove("hidden");
+            if (elements.adminPasscode) elements.adminPasscode.focus();
+        }
     }
 
     function closeLoginModal() {
-        elements.adminLoginModal.classList.add("hidden");
+        if (elements.adminLoginModal) elements.adminLoginModal.classList.add("hidden");
     }
 
     function openDashboardModal() {
         populateDashboardFields();
-        elements.adminDashboardModal.classList.remove("hidden");
+        if (elements.adminDashboardModal) elements.adminDashboardModal.classList.remove("hidden");
     }
 
     function closeDashboardModal() {
-        elements.adminDashboardModal.classList.add("hidden");
+        if (elements.adminDashboardModal) elements.adminDashboardModal.classList.add("hidden");
     }
 
     function populateDashboardFields() {
         const { profile, supabaseConfig } = state;
         
-        elements.editFullName.value = profile.fullName || "";
-        elements.editTitle.value = profile.title || "";
-        elements.editTagline.value = profile.tagline || "";
-        elements.editBio.value = profile.bio || "";
-        elements.editLocation.value = profile.location || "";
-        elements.editEmail.value = profile.email || "";
-        elements.editStatusBadge.value = profile.statusBadge || "";
-        elements.editTags.value = (profile.tags || []).join(", ");
-        elements.editPhotoUrl.value = profile.photoUrl.startsWith("data:") ? "" : profile.photoUrl;
+        if (elements.editFullName) elements.editFullName.value = profile.fullName || "";
+        if (elements.editTitle) elements.editTitle.value = profile.title || "";
+        if (elements.editTagline) elements.editTagline.value = profile.tagline || "";
+        if (elements.editBio) elements.editBio.value = profile.bio || "";
+        if (elements.editLocation) elements.editLocation.value = profile.location || "";
+        if (elements.editEmail) elements.editEmail.value = profile.email || "";
+        if (elements.editStatusBadge) elements.editStatusBadge.value = profile.statusBadge || "";
+        if (elements.editTags) elements.editTags.value = (profile.tags || []).join(", ");
+        if (elements.editPhotoUrl) elements.editPhotoUrl.value = profile.photoUrl.startsWith("data:") ? "" : profile.photoUrl;
         
         if (elements.adminPhotoPreview) {
             elements.adminPhotoPreview.src = profile.photoUrl;
         }
 
-        // Supabase Tab Fields
         if (elements.supaUrlInput) elements.supaUrlInput.value = supabaseConfig?.url || DEFAULT_CONFIG.supabaseConfig.url;
         if (elements.supaKeyInput) elements.supaKeyInput.value = supabaseConfig?.anonKey || DEFAULT_CONFIG.supabaseConfig.anonKey;
         if (elements.supaTableNameInput) elements.supaTableNameInput.value = "site_config";
@@ -714,6 +927,7 @@
     }
 
     function renderAdminSocialList() {
+        if (!elements.adminSocialList) return;
         elements.adminSocialList.innerHTML = "";
         state.socialLinks.forEach((item, index) => {
             const row = document.createElement("div");
@@ -740,7 +954,6 @@
             elements.adminSocialList.appendChild(row);
         });
 
-        // Bind Row Buttons
         elements.adminSocialList.querySelectorAll(".edit-social-btn").forEach(btn => {
             btn.addEventListener("click", () => {
                 const id = btn.getAttribute("data-id");
@@ -762,6 +975,7 @@
     }
 
     function renderAdminFeaturedList() {
+        if (!elements.adminFeaturedList) return;
         elements.adminFeaturedList.innerHTML = "";
         (state.featuredCards || []).forEach((item) => {
             const row = document.createElement("div");
@@ -788,7 +1002,6 @@
             elements.adminFeaturedList.appendChild(row);
         });
 
-        // Bind Row Buttons
         elements.adminFeaturedList.querySelectorAll(".edit-feat-btn").forEach(btn => {
             btn.addEventListener("click", () => {
                 const id = btn.getAttribute("data-id");
@@ -810,30 +1023,32 @@
     }
 
     function openItemEditModal(type, itemData) {
-        elements.itemEditType.value = type;
-        elements.itemEditModalTitle.textContent = itemData 
-            ? `${type === 'social' ? 'Sosyal Medya' : 'Öne Çıkan'} Düzenle` 
-            : `Yeni ${type === 'social' ? 'Sosyal Hesap' : 'Kart'} Ekle`;
-
-        if (itemData) {
-            elements.itemEditId.value = itemData.id;
-            elements.itemTitleInput.value = itemData.platform || itemData.title || "";
-            elements.itemSubInput.value = itemData.username || itemData.description || "";
-            elements.itemUrlInput.value = itemData.url || "";
-            elements.itemBadgeInput.value = itemData.badge || "";
-            elements.itemIconInput.value = itemData.icon || "globe";
-            elements.itemColorInput.value = itemData.color || "#FB7185";
-        } else {
-            elements.itemEditId.value = "";
-            elements.itemTitleInput.value = "";
-            elements.itemSubInput.value = "";
-            elements.itemUrlInput.value = "";
-            elements.itemBadgeInput.value = "";
-            elements.itemIconInput.value = "instagram";
-            elements.itemColorInput.value = "#FB7185";
+        if (elements.itemEditType) elements.itemEditType.value = type;
+        if (elements.itemEditModalTitle) {
+            elements.itemEditModalTitle.textContent = itemData 
+                ? `${type === 'social' ? 'Sosyal Medya' : 'Öne Çıkan'} Düzenle` 
+                : `Yeni ${type === 'social' ? 'Sosyal Hesap' : 'Kart'} Ekle`;
         }
 
-        elements.itemEditModal.classList.remove("hidden");
+        if (itemData) {
+            if (elements.itemEditId) elements.itemEditId.value = itemData.id;
+            if (elements.itemTitleInput) elements.itemTitleInput.value = itemData.platform || itemData.title || "";
+            if (elements.itemSubInput) elements.itemSubInput.value = itemData.username || itemData.description || "";
+            if (elements.itemUrlInput) elements.itemUrlInput.value = itemData.url || "";
+            if (elements.itemBadgeInput) elements.itemBadgeInput.value = itemData.badge || "";
+            if (elements.itemIconInput) elements.itemIconInput.value = itemData.icon || "globe";
+            if (elements.itemColorInput) elements.itemColorInput.value = itemData.color || "#FB7185";
+        } else {
+            if (elements.itemEditId) elements.itemEditId.value = "";
+            if (elements.itemTitleInput) elements.itemTitleInput.value = "";
+            if (elements.itemSubInput) elements.itemSubInput.value = "";
+            if (elements.itemUrlInput) elements.itemUrlInput.value = "";
+            if (elements.itemBadgeInput) elements.itemBadgeInput.value = "";
+            if (elements.itemIconInput) elements.itemIconInput.value = "instagram";
+            if (elements.itemColorInput) elements.itemColorInput.value = "#FB7185";
+        }
+
+        if (elements.itemEditModal) elements.itemEditModal.classList.remove("hidden");
     }
 
     function exportConfigJSON() {
@@ -851,7 +1066,7 @@
         const toast = document.createElement("div");
         toast.className = `toast ${isError ? 'toast-error' : ''}`;
         toast.innerHTML = `<i data-lucide="${isError ? 'alert-circle' : 'check-circle-2'}"></i> <span>${escapeHtml(message)}</span>`;
-        elements.toastContainer.appendChild(toast);
+        if (elements.toastContainer) elements.toastContainer.appendChild(toast);
         refreshLucideIcons();
 
         setTimeout(() => {
