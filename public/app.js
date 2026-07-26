@@ -120,10 +120,19 @@
        ========================================== */
     async function init() {
         loadLocalState();
-        initSupabase();
-        await syncStateFromSupabase();
         applyAppearance();
         renderSiteContent();
+        
+        // Unhide body smoothly with initial local state
+        document.body.classList.add("app-ready");
+
+        initSupabase();
+        await syncStateFromSupabase();
+        
+        // Re-render if Supabase had newer cloud state
+        applyAppearance();
+        renderSiteContent();
+        
         setupEventListeners();
         setCurrentYear();
         checkSuperadminxRoute();

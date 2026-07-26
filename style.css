@@ -90,8 +90,13 @@ body {
     line-height: 1.6;
     overflow-x: hidden;
     min-height: 100vh;
-    transition: background-color var(--transition-smooth), color var(--transition-smooth);
+    opacity: 0;
+    transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color var(--transition-smooth), color var(--transition-smooth);
     position: relative;
+}
+
+body.app-ready {
+    opacity: 1;
 }
 
 /* Ambient Glow Background Orbs */
